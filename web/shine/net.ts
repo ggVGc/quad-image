@@ -1,16 +1,11 @@
 import * as JSONAPI from 'jsonapi-typescript/index';
-import { SavedImage } from '../types';
-
-class AppError extends Error {
-  constructor(msg: string) {
-    super(msg);
-  }
-}
+import { SavedImage, AppError } from '../types';
 
 export async function upload(fileBlob: Blob): Promise<SavedImage> {
   const body = new FormData();
   body.append('image', fileBlob);
   body.append('return_json', 'true');
+
   const r = await fetch('/api/upload', {
     method: 'POST',
     body: body,
