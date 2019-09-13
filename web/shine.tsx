@@ -1,6 +1,7 @@
 import { h, Component, render } from 'preact';
 
 import { User } from './user';
+import { Images } from './images';
 
 export function init(element: HTMLElement) {
   render(<Shine />, element);
