@@ -1,4 +1,4 @@
-import * as Gallery from './gallery';
-import * as Shine from './shine';
+import * as Gallery from './gallery/gallery';
+import * as Shine from './shine/shine';
 
 export = { Gallery, Shine };
