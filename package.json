@@ -3,8 +3,8 @@
   "scripts": {
     "build": "webpack --mode=production",
     "lint": "eslint web/**.tsx",
-    "lint-fix": "eslint --fix web/**.tsx",
-    "format": "prettier --write web/**.tsx",
+    "lint-fix": "eslint --fix   web/*.ts* web/**/*.ts*",
+    "format": "prettier --write web/*.ts* web/**/*.ts*",
     "watch": "webpack --watch --mode=development"
   },
   "dependencies": {

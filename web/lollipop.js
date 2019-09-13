@@ -26,41 +26,6 @@ class Item {
   }
 }
 
-function upload(fileBlob: Blob, cb: (success: boolean, msg: string) => void) {
-  const data = new FormData();
-  data.append('image', fileBlob);
-  data.append('return_json', 'true');
-  fetch('/api/upload', {
-    method: 'POST',
-    data,
-    processData: false,
-    contentType: false,
-    success: (resp: JSONAPI.Document) => {
-      if ('data' in resp) {
-        const doc = resp as JSONAPI.DocWithData<JSONAPI.ResourceObject>;
-        const url = doc.data.id;
-        if (!url) {
-          cb(false, 'empty id returned');
-          return;
-        }
-        if (targetGallery) {
-          addImagesToGallery(targetGallery, [url]);
-        }
-        quadpees.push(url);
-        localStorage.setItem('quadpees', JSON.stringify(quadpees));
-        cb(true, url);
-      } else if ('errors' in resp) {
-        const doc = resp as JSONAPI.DocWithErrors;
-        cb(false, doc.errors.join(', '));
-      } else {
-        cb(false, `unexpected object ${Object.keys(resp).join(', ')}`);
-      }
-    },
-    error: (xhr, status, errorThrown) => {
-      cb(false, `upload request failed: ${status} - ${errorThrown}`);
-    },
-  });
-}
 
 function makeLoadedItem(loadingItem: Item, url: string) {
   const a = document.createElement('a');
@@ -117,71 +82,7 @@ function makeLoadedItem(loadingItem: Item, url: string) {
   img.src = url + '.thumb.jpg';
 }
 
-function process(file: File) {
-  setBodyActive();
 
-  const reader = new FileReader();
-  reader.onload = function() {
-    if (!this.result) {
-      error('file api acted unexpectedly, not sure why');
-      return;
-    }
-
-    const type = file.type || 'image/jpeg';
-
-    const blob = new Blob([this.result], { type });
-
-    const loadingItem = new Item(true);
-
-    upload(blob, (success, msg) => {
-      if (!success) {
-        loadingItem.actionButton.onclick = () => {
-          alert(msg);
-        };
-        loadingItem.li.classList.add('failed');
-        loadingItem.li.classList.remove('loading');
-        return;
-      }
-
-      makeLoadedItem(loadingItem, msg);
-    });
-  };
-
-  reader.readAsArrayBuffer(file);
-}
-
-function setBodyActive() {
-  document.body.classList.add('active-upload');
-}
-
-function onFiles(items: FileList | null, context: string) {
-  if (!items) {
-    error('Files not set; nothing to do.');
-    return;
-  }
-
-  if (0 === items.length) {
-    error(
-      `No files, valid or not, were found in your ${context}. Maybe it wasn't a valid image, or your browser is confused about what it was?`,
-    );
-    return;
-  }
-
-  // FileList isn't iterable
-  // tslint:disable-next-line:prefer-for-of
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-    console.log(item);
-
-    if (item.type.match(/image.*/)) {
-      process(item);
-    } else {
-      error("Ignoring non-image item (of type '" + item.type + "') in " + context + ': ' + item.name);
-    }
-  }
-
-  form.classList.remove('dragover');
-}
 
 function error(msg: string) {
   const errors = document.getElementById('errors') as HTMLElement;
@@ -189,22 +90,6 @@ function error(msg: string) {
   const span = document.createElement('p');
   span.innerHTML = msg;
   errors.insertBefore(span, errors.firstChild);
-}
-
-function callGallery(gallery: string, images: string[]) {
-  return $.ajax('/api/gallery', {
-    type: 'PUT',
-    contentType: 'application/json',
-    data: JSON.stringify({
-      data: {
-        type: 'gallery',
-        attributes: {
-          gallery,
-          images,
-        },
-      },
-    }),
-  });
 }
 
 function setCurrentPublic(id: string) {
