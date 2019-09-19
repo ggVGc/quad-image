@@ -2,8 +2,8 @@
   "name": "quad-image",
   "scripts": {
     "build": "webpack --mode=production",
-    "lint": "eslint web/**.tsx",
-    "lint-fix": "eslint --fix   web/*.ts* web/**/*.ts*",
+    "lint": "eslint             *.js web/*.ts* web/**/*.ts*",
+    "lint-fix": "eslint --fix   *.js web/*.ts* web/**/*.ts*",
     "format": "prettier --write *.js web/*.ts* web/**/*.ts*",
     "watch": "webpack --watch --mode=development"
   },
@@ -14,12 +14,12 @@
   },
   "devDependencies": {
     "@types/webpack-env": "^1.14.0",
-    "@typescript-eslint/eslint-plugin": "^2.2.0",
-    "@typescript-eslint/parser": "^2.2.0",
+    "@typescript-eslint/eslint-plugin": "^2.3.0",
+    "@typescript-eslint/parser": "^2.3.0",
     "awesome-typescript-loader": "^5.2.1",
     "eslint": "^6.4.0",
     "eslint-config-prettier": "^6.3.0",
-    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "ignore-loader": "^0.1.2",
     "jest": "^24.9.0",
     "prettier": "^1.18.2",
@@ -27,6 +27,6 @@
     "typescript": "^3.6.3",
     "url-loader": "^2.1.0",
     "webpack": "^4.40.2",
-    "webpack-cli": "^3.3.8"
+    "webpack-cli": "^3.3.9"
   }
 }
