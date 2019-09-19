@@ -51,7 +51,6 @@ ul#images {
     box-sizing: border-box;
     border-top: 1px solid #ddd;
     height: 200px;
-    transform: translateY(100%);
     margin: 0;
     padding: 10px;
     overflow-y: hidden;
@@ -169,10 +168,6 @@ ul#images li.loaded:hover button {
 
 body.active-upload #form {
     height: calc(100% - 200px);
-}
-
-body.active-upload #images {
-    transform: translateY(0);
 }
 
 #errors {

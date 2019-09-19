@@ -128,20 +128,7 @@ function addImagesToGallery(gallery: string, images: string[]) {
     });
 }
 
-function loadStorage() {
-  const storage: string | null = localStorage.getItem('quadpees');
-  if (storage) {
-    quadpees = JSON.parse(storage);
-    setBodyActive();
-    quadpees.forEach((pee) => {
-      makeLoadedItem(new Item(false), pee);
-    });
-  } else {
-    localStorage.setItem('quadpees', '[]');
-  }
 
-  targetGallery = localStorage.getItem('gallery');
-}
 
 function setEvents() {
   const doc = document.documentElement as HTMLElement;

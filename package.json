@@ -4,7 +4,7 @@
     "build": "webpack --mode=production",
     "lint": "eslint web/**.tsx",
     "lint-fix": "eslint --fix   web/*.ts* web/**/*.ts*",
-    "format": "prettier --write web/*.ts* web/**/*.ts*",
+    "format": "prettier --write *.js web/*.ts* web/**/*.ts*",
     "watch": "webpack --watch --mode=development"
   },
   "dependencies": {
@@ -13,6 +13,7 @@
     "preact": "^10.0.0-rc.3"
   },
   "devDependencies": {
+    "@types/webpack-env": "^1.14.0",
     "@typescript-eslint/eslint-plugin": "^2.2.0",
     "@typescript-eslint/parser": "^2.2.0",
     "awesome-typescript-loader": "^5.2.1",

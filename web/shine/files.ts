@@ -1,5 +1,5 @@
-import { AppError, SavedImage } from "../types";
-import { upload } from "./net";
+import { AppError, SavedImage } from '../types';
+import { upload } from './net';
 
 function readFile(file: File): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
@@ -9,15 +9,15 @@ function readFile(file: File): Promise<ArrayBuffer> {
       if (this.result instanceof ArrayBuffer) {
         resolve(this.result);
       } else {
-        reject("invalid result");
+        reject('invalid result');
       }
     };
 
-    reader.onerror = () => reject("unknown error reading file");
-    reader.onabort = () => reject("unexpected abort reading file");
+    reader.onerror = () => reject('unknown error reading file');
+    reader.onabort = () => reject('unexpected abort reading file');
 
     reader.readAsArrayBuffer(file);
-  })
+  });
 }
 
 async function uploadFile(file: File): Promise<SavedImage> {
@@ -63,7 +63,7 @@ export async function onFiles(items: FileList | null, context: string) {
   if (0 === items.length) {
     throw new AppError(
       `No files, valid or not, were found in your ${context}.` +
-      `Maybe it wasn't a valid image, or your browser is confused about what it was?`,
+        `Maybe it wasn't a valid image, or your browser is confused about what it was?`,
     );
     return;
   }
