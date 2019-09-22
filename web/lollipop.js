@@ -131,46 +131,7 @@ function addImagesToGallery(gallery: string, images: string[]) {
 
 
 function setEvents() {
-  const doc = document.documentElement as HTMLElement;
-  const realos = document.getElementById('realos') as HTMLInputElement;
 
-  realos.onchange = () => {
-    onFiles(realos.files, 'picked files');
-  };
-
-  doc.onpaste = (e) => {
-    e.preventDefault();
-    onFiles(e.clipboardData && e.clipboardData.files, 'pasted content');
-  };
-
-  doc.ondrop = (e) => {
-    e.preventDefault();
-    form.classList.remove('dragover');
-    if (e.dataTransfer) {
-      onFiles(e.dataTransfer.files, 'dropped objects');
-    } else {
-      error("Something was dropped, but it didn't have anything inside.");
-    }
-  };
-
-  doc.ondragenter = (e) => {
-    if (e.dataTransfer) {
-      e.dataTransfer.dropEffect = 'copy';
-    }
-    e.preventDefault();
-  };
-
-  doc.ondragover = (e) => {
-    e.preventDefault();
-    if (e.dataTransfer) {
-      e.dataTransfer.dropEffect = 'copy';
-    }
-    form.classList.add('dragover');
-  };
-
-  doc.ondragexit = doc.ondragleave = () => {
-    form.classList.remove('dragover');
-  };
 
   $('#user-button').on('click', () => {
     $('#user-button').hide();

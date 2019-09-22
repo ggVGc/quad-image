@@ -57,7 +57,6 @@ function setBodyActive() {
 export async function onFiles(items: FileList | null, context: string) {
   if (!items) {
     throw new AppError('Files not set; nothing to do.');
-    return;
   }
 
   if (0 === items.length) {
@@ -65,7 +64,6 @@ export async function onFiles(items: FileList | null, context: string) {
       `No files, valid or not, were found in your ${context}.` +
         `Maybe it wasn't a valid image, or your browser is confused about what it was?`,
     );
-    return;
   }
 
   // FileList isn't iterable
