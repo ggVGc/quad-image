@@ -82,16 +82,6 @@ function makeLoadedItem(loadingItem: Item, url: string) {
   img.src = url + '.thumb.jpg';
 }
 
-
-
-function error(msg: string) {
-  const errors = document.getElementById('errors') as HTMLElement;
-  errors.style.display = 'block';
-  const span = document.createElement('p');
-  span.innerHTML = msg;
-  errors.insertBefore(span, errors.firstChild);
-}
-
 function setCurrentPublic(id: string) {
   $('#current-gallery')
     .empty()

@@ -1,8 +1,10 @@
 import { h, Component, render } from 'preact';
+import cc from 'classcat';
 
 import { User } from './user';
 import { Images } from './images';
 import { onFiles } from './files';
+import { Errors } from './errors';
 
 require('preact/debug');
 
@@ -30,6 +32,7 @@ export function init(element: HTMLElement) {
 interface State {
   storage: Storage;
   dragging: boolean;
+  errors: string[];
 }
 
 class Shine extends Component<{}, State> {
@@ -41,6 +44,7 @@ class Shine extends Component<{}, State> {
     this.state = {
       storage: new Storage(),
       dragging: false,
+      errors: [],
     };
   }
   render() {
@@ -52,27 +56,39 @@ class Shine extends Component<{}, State> {
           </p>
           <User />
         </div>
-        <label id="form" for="realos" class={this.state.dragging ? 'dragover' : undefined} />
-        <input
-          type="file"
-          multiple={true}
-          id="realos"
-          onInput={(e) => onFiles(e.target && (e.target as HTMLInputElement).files, 'picked files')}
-        />
+        <label
+          class={cc({
+            dragover: this.state.dragging,
+            upload: true,
+          })}
+        >
+          <input
+            class="upload__input"
+            type="file"
+            multiple={true}
+            onInput={(e) => onFiles(e.target && (e.target as HTMLInputElement).files, 'picked files')}
+          />
+        </label>
         <Images images={this.state.storage.images.map((id) => ({ id, code: 'image' }))} />
         <div id="tcs">
           <p>
             <a href="/terms/">T&amp;Cs</a>
           </p>
         </div>
+        <Errors errors={this.state.errors} />
       </div>
     );
   }
 
-  error(message: string) {}
+  error(message: string) {
+    this.setState((state) => {
+      state.errors.push(message);
+      return { errors: state.errors };
+    });
+  }
 
   setupDoc() {
-    const doc = document.documentElement as HTMLElement;
+    const doc = document.documentElement;
 
     doc.onpaste = (e) => {
       e.preventDefault();
