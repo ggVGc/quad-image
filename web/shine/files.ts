@@ -20,7 +20,7 @@ function readFile(file: File): Promise<ArrayBuffer> {
   });
 }
 
-async function uploadFile(file: File): Promise<SavedImage> {
+export async function uploadFile(file: File): Promise<SavedImage> {
   setBodyActive();
 
   const blobPart = await readFile(file);
@@ -52,32 +52,4 @@ makeLoadedItem(loadingItem, msg);
 // TODO: State somewhere
 function setBodyActive() {
   document.body.classList.add('active-upload');
-}
-
-export async function onFiles(items: FileList | null, context: string) {
-  if (!items) {
-    throw new AppError('Files not set; nothing to do.');
-  }
-
-  if (0 === items.length) {
-    throw new AppError(
-      `No files, valid or not, were found in your ${context}.` +
-        `Maybe it wasn't a valid image, or your browser is confused about what it was?`,
-    );
-  }
-
-  // FileList isn't iterable
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-    console.log(item);
-
-    if (item.type.match(/image.*/)) {
-      await uploadFile(item);
-    } else {
-      // TODO: ignore and continue, instead of exiting here
-      throw new AppError("Ignoring non-image item (of type '" + item.type + "') in " + context + ': ' + item.name);
-    }
-  }
-
-  // TODO: form.classList.remove('dragover');
 }

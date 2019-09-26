@@ -2,9 +2,11 @@ import { h, Component, render } from 'preact';
 import cc from 'classcat';
 
 import { User } from './user';
-import { Images } from './images';
-import { onFiles } from './files';
+import { Images, MaybeImage } from './images';
+import { uploadFile } from './files';
 import { Errors } from './errors';
+import {JSXInternal} from 'preact/src/jsx';
+import EventHandler = JSXInternal.EventHandler;
 
 require('preact/debug');
 
@@ -25,12 +27,14 @@ class Storage {
   }
 }
 
+const storage = new Storage();
+
 export function init(element: HTMLElement) {
   render(<Shine />, element);
 }
 
 interface State {
-  storage: Storage;
+  images: MaybeImage[];
   dragging: boolean;
   errors: string[];
 }
@@ -42,7 +46,7 @@ class Shine extends Component<{}, State> {
     this.setupDoc();
 
     this.state = {
-      storage: new Storage(),
+      images: storage.images.map((id) => ({ id, code: 'image' })),
       dragging: false,
       errors: [],
     };
@@ -66,10 +70,10 @@ class Shine extends Component<{}, State> {
             class="upload__input"
             type="file"
             multiple={true}
-            onInput={(e) => onFiles(e.target && (e.target as HTMLInputElement).files, 'picked files')}
+            onInput={(e) => this.onInput(e)}
           />
         </label>
-        <Images images={this.state.storage.images.map((id) => ({ id, code: 'image' }))} />
+        <Images images={this.state.images} />
         <div id="tcs">
           <p>
             <a href="/terms/">T&amp;Cs</a>
@@ -87,19 +91,55 @@ class Shine extends Component<{}, State> {
     });
   }
 
+  async onFiles(items: FileList | null, context: string) {
+    if (!items) {
+      this.error('Files not set; nothing to do.');
+      return;
+    }
+
+    if (0 === items.length) {
+      this.error(
+        `No files, valid or not, were found in your ${context}.` +
+          `Maybe it wasn't a valid image, or your browser is confused about what it was?`,
+      );
+      return;
+    }
+
+    // FileList isn't iterable
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+
+      if (item.type.match(/image.*/)) {
+        await uploadFile(item);
+      } else {
+        this.error("Ignoring non-image item (of type '" + item.type + "') in " + context + ': ' + item.name);
+      }
+    }
+
+    // TODO: form.classList.remove('dragover');
+  }
+
+  onFilesOrError(items: FileList | null, context: string) {
+    this.onFiles(items, context).catch((e) => this.error(e.toString()));
+  }
+
+  onInput(e: Event) {
+    this.onFilesOrError(e.target && (e.target as HTMLInputElement).files, 'picked files')
+  }
+
   setupDoc() {
     const doc = document.documentElement;
 
     doc.onpaste = (e) => {
       e.preventDefault();
-      onFiles(e.clipboardData && e.clipboardData.files, 'pasted content');
+      this.onFilesOrError(e.clipboardData && e.clipboardData.files, 'pasted content');
     };
 
     doc.ondrop = (e) => {
       e.preventDefault();
       this.setState({ dragging: false });
       if (e.dataTransfer) {
-        onFiles(e.dataTransfer.files, 'dropped objects');
+        this.onFilesOrError(e.dataTransfer.files, 'dropped objects');
       } else {
         this.error("Something was dropped, but it didn't have anything inside.");
       }
